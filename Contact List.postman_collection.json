@@ -1,0 +1,991 @@
+{
+	"info": {
+		"_postman_id": "25233f68-c451-46a4-94c0-1523325fcdc8",
+		"name": "Contact List",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29497689",
+		"_collection_link": "https://zaidjaber.postman.co/workspace/Contact-List---API-Project~3149fc03-5437-42ba-a586-435c771d456c/collection/44565430-25233f68-c451-46a4-94c0-1523325fcdc8?action=share&source=collection_link&creator=29497689"
+	},
+	"item": [
+		{
+			"name": "Contact",
+			"item": [
+				{
+					"name": "Add Contact - ZJ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//TC_CON_020",
+									"pm.test(\"Status code is 201\", function () {",
+									"    pm.response.to.have.status(201);",
+									"});",
+									"",
+									"//TC_CON_015",
+									"pm.test(\"Response time is less than 2s\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);",
+									"});",
+									"",
+									"//TC_CON_019",
+									"pm.test(\"Content-Type is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"//TC_CON_016",
+									"const response = pm.response.json();",
+									"const requestBody = JSON.parse(request.data);",
+									"pm.test(\"Response contains all request fields and system fields (_id, owner, __v)\", function () {",
+									"    Object.keys(requestBody).forEach(key => {",
+									"        pm.expect(response).to.have.property(key);",
+									"    });",
+									"    [\"_id\", \"owner\", \"__v\"].forEach(field => {",
+									"        pm.expect(response).to.have.property(field);",
+									"    });",
+									"});",
+									"",
+									"//TC_CON_017",
+									"const responseType = pm.response.json();",
+									"pm.test(\"All Fields have correct data types\", function () {",
+									"    pm.expect(response._id).to.be.a(\"string\");",
+									"    pm.expect(response.firstName).to.be.a(\"string\");",
+									"    pm.expect(response.lastName).to.be.a(\"string\");",
+									"    pm.expect(response.birthdate).to.be.a(\"string\");",
+									"    pm.expect(response.email).to.be.a(\"string\");",
+									"    pm.expect(response.phone).to.be.a(\"string\");",
+									"    pm.expect(response.street1).to.be.a(\"string\");",
+									"    pm.expect(response.street2).to.be.a(\"string\");",
+									"    pm.expect(response.city).to.be.a(\"string\");",
+									"    pm.expect(response.stateProvince).to.be.a(\"string\");",
+									"    pm.expect(response.postalCode).to.be.a(\"string\");",
+									"    pm.expect(response.country).to.be.a(\"string\");",
+									"    pm.expect(response.owner).to.be.a(\"string\");",
+									"    pm.expect(response.__v).to.be.a(\"number\");",
+									"});",
+									"",
+									"//TC_CON_018",
+									"const responseData = pm.response.json();",
+									"const requestBodyData = JSON.parse(request.data);",
+									"pm.test(\"Response data matches exactly data sent in request\", function () {",
+									"    Object.keys(requestBodyData).forEach(key => {",
+									"        pm.expect(responseData[key]).to.eql(requestBodyData[key]);",
+									"    });",
+									"});",
+									"",
+									"",
+									"pm.environment.set(\"id\", pm.response.json()._id);",
+									"pm.test(\"Set ID from response to environment\", function () {",
+									"    pm.expect(pm.environment.get(\"id\")).to.not.be.undefined;",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"birthdate\": \"1970-01-01\",\n    \"email\": \"jdoe@fake.com\",\n    \"phone\": \"8005555555\",\n    \"street1\": \"1 Main St.\",\n    \"street2\": \"Apartment A\",\n    \"city\": \"Anytown\",\n    \"stateProvince\": \"KS\",\n    \"postalCode\": \"12345\",\n    \"country\": \"USA\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/contacts",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"contacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contact List - ZJ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//TC_CON_025",
+									"pm.test(\"Response time is less than 1s\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});",
+									"",
+									"//TC_CON_029",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//TC_CON_028",
+									"pm.test(\"Content-Type is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});const contacts = pm.response.json();",
+									"",
+									"//TC_CON_027",
+									"pm.test(\"Each contact has firstName and lastName fields\", function () {",
+									"    contacts.forEach((contact, index) => {",
+									"        pm.expect(contact).to.have.property(\"firstName\");",
+									"        pm.expect(contact.firstName, `Contact ${index} firstName`).to.be.a(\"string\").and.not.empty;",
+									"        pm.expect(contact).to.have.property(\"lastName\");",
+									"        pm.expect(contact.lastName, `Contact ${index} lastName`).to.be.a(\"string\").and.not.empty;",
+									"    });",
+									"});",
+									"",
+									"//TC_CON_026",
+									"const contactsType = pm.response.json();",
+									"pm.test(\"Each contact has correct data types for fields\", function () {",
+									"    contactsType.forEach((contact, index) => {",
+									"        pm.expect(contact._id, `Contact ${index} _id`).to.be.a(\"string\");",
+									"        pm.expect(contact.firstName, `Contact ${index} firstName`).to.be.a(\"string\");",
+									"        pm.expect(contact.lastName, `Contact ${index} lastName`).to.be.a(\"string\");",
+									"        pm.expect(contact.owner, `Contact ${index} owner`).to.be.a(\"string\");",
+									"        pm.expect(contact.__v, `Contact ${index} __v`).to.be.a(\"number\");",
+									"        const nullFields = [",
+									"            \"birthdate\", \"email\", \"phone\", \"street1\", \"street2\",",
+									"            \"city\", \"stateProvince\", \"postalCode\", \"country\"",
+									"        ];",
+									"        nullFields.forEach(field => {",
+									"            const val = contact[field];",
+									"            pm.expect(",
+									"                val === undefined || val === null || typeof val === \"string\",",
+									"                `Contact ${index} ${field} should be string`",
+									"            ).to.be.true;",
+									"        });",
+									"    });",
+									"});",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/contacts",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"contacts"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Contact - ZJ",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//TC_CON_042",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"//TC_CON_037",
+									"pm.test(\"Response time is less than 1s\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});",
+									"",
+									"//TC_CON_041",
+									"pm.test(\"Content-Type is present\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"});",
+									"",
+									"//TC_CON_039",
+									"const contact = pm.response.json();",
+									"pm.test(\"Contact has required firstName and lastName fields\", function () {",
+									"    pm.expect(contact).to.have.property(\"firstName\");",
+									"    pm.expect(contact.firstName).to.be.a(\"string\").and.not.empty;",
+									"    pm.expect(contact).to.have.property(\"lastName\");",
+									"    pm.expect(contact.lastName).to.be.a(\"string\").and.not.empty;",
+									"});",
+									"",
+									"//TC_CON_040",
+									"const contactID = pm.response.json();",
+									"const contactIdURL = pm.request.url.variables.get(\"contactId\") || pm.request.url.path.slice(-1)[0];",
+									"pm.test(\"Contact ID matches ID in endpoint URL\", function () {",
+									"    pm.expect(contactID._id).to.eql(contactIdURL);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/contacts/{{id}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"contacts",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Contact - HY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response time is less than 1s\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"firstName\": \"sw\", \"lastName\": \"<sc>\" }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/contacts/{{id}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"contacts",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Contact - HY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Content-Type is application/json\", function () {",
+									"    pm.response.to.have.header(\"Content-Type\");",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response time is less than 1s\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"birthdate\": \"1970-01-01\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/contacts/{{id}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"contacts",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Contact - HY",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Response time is less than 1s\", function () {",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/contacts/{{id}}",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"contacts",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "### POST Add Contact\n\n#### [https://thinking-tester-contact-list.herokuapp.com/contacts<br><br>](https://thinking-tester-contact-list.herokuapp.com/contacts)HEADERS\n\n| Authorization | Bearer {{token}} |\n| --- | --- |\n\nBody raw (json)\n\n``` json\n{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"birthdate\": \"1970-01-01\",\n    \"email\": \"jdoe@fake.com\",\n    \"phone\": \"8005555555\",\n    \"street1\": \"1 Main St.\",\n    \"street2\": \"Apartment A\",\n    \"city\": \"Anytown\",\n    \"stateProvince\": \"KS\",\n    \"postalCode\": \"12345\",\n    \"country\": \"USA\"\n}\n\n ```\n\n---\n\n### GET Get Contact List\n\n#### [https://thinking-tester-contact-list.herokuapp.com/contacts<br><br>](https://thinking-tester-contact-list.herokuapp.com/contacts)HEADERS\n\n| Authorization | Bearer {{token}} |\n| --- | --- |\n\n---\n\n### GET Get Contact\n\n#### [https://thinking-tester-contact-list.herokuapp.com/contacts/<br>](https://thinking-tester-contact-list.herokuapp.com/contacts/%7B%7Bid%7D%7D)\n\nHEADERS\n\n| Authorization | Bearer {{token}} |\n| --- | --- |\n\n---\n\n### PUT Update Contact\n\n#### [https://thinking-tester-contact-list.herokuapp.com/contacts/](https://thinking-tester-contact-list.herokuapp.com/contacts)\n\nHEADERS\n\n| Authorization | Bearer {{token}} |\n| --- | --- |\n\nBody raw (json)\n\n``` json\n{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"birthdate\": \"1970-01-01\",\n    \"email\": \"jdoe@fake.com\",\n    \"phone\": \"8005555555\",\n    \"street1\": \"1 Main St.\",\n    \"street2\": \"Apartment A\",\n    \"city\": \"Anytown\",\n    \"stateProvince\": \"KS\",\n    \"postalCode\": \"12345\",\n    \"country\": \"USA\"\n}\n\n ```\n\n---\n\n### PATCH Update Contact\n\n#### [https://thinking-tester-contact-list.herokuapp.com/contacts/](https://thinking-tester-contact-list.herokuapp.com/contacts)\n\nThe PATCH Update Contact operation is not available through the UI.\n\nHEADERS\n\n| Authorization | Bearer {{token}} |\n| --- | --- |\n\nBody raw (json)\n\n``` json\n{\n    \"firstName\": \"Anna\"\n}\n\n ```\n\n---\n\n### DELETE Delete Contact\n\n#### [https://thinking-tester-contact-list.herokuapp.com/contacts/<br>](https://thinking-tester-contact-list.herokuapp.com/contacts/%7B%7Bid%7D%7D)\n\nHEADERS\n\n| Authorization | Bearer {{token}} |\n| --- | --- |"
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Add User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse JSON response\r",
+									"let jsonData = pm.response.json();\r",
+									"let responseBody = jsonData.user;\r",
+									"let requestBody = JSON.parse(pm.request.body.raw);\r",
+									"\r",
+									"//  Save token if exists\r",
+									"if (jsonData.token) {\r",
+									"    pm.environment.set(\"token\", jsonData.token);\r",
+									"    console.log(\"Token saved: \" + jsonData.token);\r",
+									"} else {\r",
+									"    console.log(\"Token not found in response.\");\r",
+									"}\r",
+									"\r",
+									"//  Status Code Check\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"// Response Time Check\r",
+									"pm.test(\"Response time < 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//  Content-Type Check\r",
+									"pm.test(\"Content-Type is application/json\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									"\r",
+									"//  Validate User ID Exists\r",
+									"pm.test(\"User ID exists\", function () {\r",
+									"    pm.expect(responseBody._id).to.not.be.null;\r",
+									"});\r",
+									"\r",
+									"//  Compare Request & Response Values\r",
+									"pm.test(\"Compare request and response values\", function () {\r",
+									"    pm.expect(responseBody.firstName).to.eql(requestBody.firstName);\r",
+									"    pm.expect(responseBody.lastName).to.eql(requestBody.lastName);\r",
+									"    pm.expect(responseBody.email).to.eql(requestBody.email);\r",
+									"});\r",
+									"\r",
+									"//  Hardcoded Field Checks (Optional but clear)\r",
+									"// pm.test(\"First Name is Test\", function () {\r",
+									"//     pm.expect(responseBody.firstName).to.eql(\"Test\");\r",
+									"// });\r",
+									"\r",
+									"// pm.test(\"Last Name is User\", function () {\r",
+									"//     pm.expect(responseBody.lastName).to.eql(\"User\");\r",
+									"// });\r",
+									"\r",
+									"// pm.test(\"Email is test@fake.com\", function () {\r",
+									"//     pm.expect(responseBody.email).to.eql(\"test@fake.com\");\r",
+									"// });\r",
+									"\r",
+									"//  Token Exists\r",
+									"pm.test(\"Token is returned\", function () {\r",
+									"    pm.expect(jsonData.token).to.not.be.empty;\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"love4040\",\r\n    \"lastName\": \"love\",\r\n    \"email\": \"fathi21@axsos.academy\",\r\n    \"password\": \"@yoyo60@yoyo8080\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/users",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User Profile",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse JSON response\r",
+									"let jsonData = pm.response.json();\r",
+									"\r",
+									"//  Status Code Check\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//  Response Time Check\r",
+									"pm.test(\"Response time < 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//  Content-Type Check\r",
+									"pm.test(\"Content-Type is application/json\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									"\r",
+									"//  Validate User ID Exists\r",
+									"pm.test(\"User ID exists\", function () {\r",
+									"    pm.expect(jsonData._id).to.not.be.undefined;\r",
+									"});\r",
+									"\r",
+									"// Hardcoded Data Checks (Optional)\r",
+									"// pm.test(\"First Name is Test\", function () {\r",
+									"//     pm.expect(jsonData.firstName).to.eql(\"Test\");\r",
+									"// });\r",
+									"\r",
+									"// pm.test(\"Last Name is User\", function () {\r",
+									"//     pm.expect(jsonData.lastName).to.eql(\"User\");\r",
+									"// });\r",
+									"\r",
+									"// pm.test(\"Email is test@fake.com\", function () {\r",
+									"//     pm.expect(jsonData.email).to.eql(\"test@fake.com\");\r",
+									"// });\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/users/me",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Parse JSON response\r",
+									"let jsonData = pm.response.json();\r",
+									"let requestBody = JSON.parse(pm.request.body.raw);\r",
+									"\r",
+									"//  Status Code Check\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"// Response Time Check\r",
+									"pm.test(\"Response time < 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//  Content-Type Check\r",
+									"pm.test(\"Content-Type is application/json\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									"\r",
+									"//  Validate User ID Exists\r",
+									"pm.test(\"User ID exists\", function () {\r",
+									"    pm.expect(jsonData._id).to.not.be.undefined;\r",
+									"});\r",
+									"\r",
+									"//  Compare Response Fields to Request\r",
+									"pm.test(\"Compare updated user fields\", function () {\r",
+									"    pm.expect(jsonData.firstName).to.eql(requestBody.firstName);\r",
+									"    pm.expect(jsonData.lastName).to.eql(requestBody.lastName);\r",
+									"    pm.expect(jsonData.email).to.eql(requestBody.email);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \r\n\"firstName\": \"Tititup4040\",\r\n    \"lastName\": \"Tititup\",\r\n    \"email\": \"FATHI81@axsos.academy\"\r\n    }",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/users/me",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User HF",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// let resBody = pm.response.text().trim();\r",
+									"\r",
+									"// if (resBody !== \"\") {\r",
+									"//     let login_response = pm.response.json();\r",
+									"//     if (login_response.token) {\r",
+									"//         pm.environment.set(\"get&updateProfileToken\", login_response.token);\r",
+									"//         console.log(\"Token saved to environment: \", login_response.token);\r",
+									"//     } else {\r",
+									"//         console.warn(\"Token not found in response\");\r",
+									"//     }\r",
+									"//     pm.test(\"Status code is 200\", function () {\r",
+									"//         pm.response.to.have.status(200);\r",
+									"//     });\r",
+									"//     pm.test(\"Token is present in the response\", function () {\r",
+									"//         pm.expect(login_response.token).to.exist;\r",
+									"//     });\r",
+									"//     pm.test(\"Body matches firstName (string)\", function () {\r",
+									"//         pm.expect(pm.response.text()).to.include(\"Hanna\");\r",
+									"//     });\r",
+									"// } else {\r",
+									"//     pm.test(\"Unregistered User / Deleted User\", function () {\r",
+									"//         pm.response.to.have.status(401);\r",
+									"//     });\r",
+									"// }\r",
+									"\r",
+									"\r",
+									"// Safely parse request body\r",
+									"let requestBody = {};\r",
+									"try {\r",
+									"    requestBody = JSON.parse(pm.request.body.raw);\r",
+									"} catch (e) {\r",
+									"    console.log(\"Request body missing or not in JSON format.\");\r",
+									"}\r",
+									"\r",
+									"// Parse JSON response\r",
+									"let jsonData = pm.response.json();\r",
+									"let responseUser = jsonData.user;\r",
+									"\r",
+									"//  Save token to environment (if available)\r",
+									"if (jsonData.token) {\r",
+									"    pm.environment.set(\"token\", jsonData.token);\r",
+									"    console.log(\"Token saved: \" + jsonData.token);\r",
+									"} else {\r",
+									"    console.log(\"Token not found in response.\");\r",
+									"}\r",
+									"\r",
+									"//  Status Code\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//  Response Time\r",
+									"pm.test(\"Response time < 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//  Content-Type\r",
+									"pm.test(\"Content-Type is application/json\", function () {\r",
+									"    pm.response.to.have.header(\"Content-Type\");\r",
+									"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+									"});\r",
+									"\r",
+									"// ID Exists\r",
+									"pm.test(\"User ID exists\", function () {\r",
+									"    pm.expect(responseUser._id).to.not.be.undefined;\r",
+									"});\r",
+									"\r",
+									"//  Compare Fields (Optional Dynamic Check)\r",
+									"if (requestBody && requestBody.email) {\r",
+									"    pm.test(\"Compare login email\", function () {\r",
+									"        pm.expect(responseUser.email).to.eql(requestBody.email);\r",
+									"    });\r",
+									"} else {\r",
+									"    console.log(\"Skipping email comparison – request body missing.\");\r",
+									"}\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"// //  Check Status Code\r",
+									"// pm.test(\"Status code is 200\", function () {\r",
+									"//     pm.response.to.have.status(200);\r",
+									"// });\r",
+									"\r",
+									"// //  Proceed only if request succeeded\r",
+									"// if (pm.response.code === 200) {\r",
+									"//     let jsonData = pm.response.json();\r",
+									"    \r",
+									"//     // Save token if exists\r",
+									"//     if (jsonData.token) {\r",
+									"//         pm.environment.set(\"token\", jsonData.token);\r",
+									"//         console.log(\"Token saved: \" + jsonData.token);\r",
+									"//     } else {\r",
+									"//         console.log(\"Token not found in response.\");\r",
+									"//     }\r",
+									"\r",
+									"//     // Other checks...\r",
+									"//     pm.test(\"User ID exists\", function () {\r",
+									"//         pm.expect(jsonData.user._id).to.not.be.undefined;\r",
+									"//     });\r",
+									"\r",
+									"// } else {\r",
+									"//     console.log(\"Login failed. No response body to parse.\");\r",
+									"// }\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\":\"malak7000@fake.com\",\r\n    \"password\":\"@yoyo60@yoyo8080\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseURL}}/users/login",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout User HF",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// let statusCode = pm.response.code;\r",
+									"// if (statusCode == 200) {\r",
+									"//     pm.test(\"Status code is 200\", function () {\r",
+									"//         pm.response.to.have.status(200);\r",
+									"//     });\r",
+									"// } else {\r",
+									"//     pm.test(\"Token is invalid after logout or delete\", function () {\r",
+									"//         pm.response.to.have.status(401);\r",
+									"//     });\r",
+									"// }\r",
+									"// pm.test(\"Response time is less than 1s\", function () {\r",
+									"//     pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"// });\r",
+									"\r",
+									"//  Status Code Check\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//  Response Time Check\r",
+									"pm.test(\"Response time < 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//  Clear Token from Environment after Logout\r",
+									"pm.test(\"Token cleared after logout\", function () {\r",
+									"    pm.environment.unset(\"token\");\r",
+									"    console.log(\"Token cleared from environment.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/users/logout",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete User HF",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// let statusCode = pm.response.code;\r",
+									"// if (statusCode == 200) {\r",
+									"//     pm.test(\"Status code is 200\", function () {\r",
+									"//         pm.response.to.have.status(200);\r",
+									"//     });\r",
+									"// } else {\r",
+									"//     pm.test(\"Token is invalid after Deletion\", function () {\r",
+									"//         pm.response.to.have.status(401);\r",
+									"//     });\r",
+									"//     pm.test(\"Response body returns authentication error message\", function () {\r",
+									"//         pm.expect(pm.response.json().error).to.eql(\"Please authenticate.\");\r",
+									"//     });\r",
+									"// }\r",
+									"\r",
+									"// pm.test(\"Response time is less than 2s\", function () {\r",
+									"//     pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"// });\r",
+									"\r",
+									"\r",
+									"\r",
+									"//  Status Code Check\r",
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"//  Response Time Check\r",
+									"pm.test(\"Response time < 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//  Confirm User Deleted by Clearing Token\r",
+									"pm.test(\"Token cleared after deleting user\", function () {\r",
+									"    pm.environment.unset(\"token\");\r",
+									"    console.log(\"User deleted and token cleared from environment.\");\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disabledSystemHeaders": {}
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{token}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseURL}}/users/me",
+							"host": [
+								"{{baseURL}}"
+							],
+							"path": [
+								"users",
+								"me"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"description": "StartFragmentUser Collection Documentation – API GuideEndFragment\n\nStartFragment\n\n### 📘 Overview\n\nThis Postman collection includes all endpoints related to **user management**, including registration, login, and updating user information.\n\n---\n\n### 📍 Base URL\n\n```\nhttps://thinking-tester-contact-list.herokuapp.com\n\n ```\n\n---\n\n### 🔐 Authentication\n\n- **Type**: Bearer Token (JWT)\n    \n- **How to use**: After a successful login, copy the `token` from the response and include it in the Authorization header like so:\n    \n\n```\nmakefileCopyEditAuthorization: Bearer <token>\n\n ```\n\n---\n\n### 📂 Endpoints\n\n---\n\n### 📤 **Add User**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/users`\n    \n- **Description**: Create a new user account\n    \n- **Body (JSON)**:\n    \n\n```\njsonCopyEdit{\n  \"firstName\": \"Yousef\",\n  \"lastName\": \"Sabet\",\n  \"email\": \"yousef@example.com\",\n  \"password\": \"YourPassword123\"\n}\n\n ```\n\n- **Expected Response**: `201 Created` with new user info\n    \n\n---\n\n### 🔑 **Login User**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/users/login`\n    \n- **Description**: Login with email and password to get a token\n    \n- **Body (JSON)**:\n    \n\n```\njsonCopyEdit{\n  \"email\": \"yousef@example.com\",\n  \"password\": \"YourPassword123\"\n}\n\n ```\n\n- **Expected Response**: `200 OK` with token\n    \n\n---\n\n### 🔄 **Update User Info**\n\n- **Method**: `PATCH`\n    \n- **Endpoint**: `/users/me`\n    \n- **Description**: Update logged-in user’s data\n    \n- **Headers**:\n    \n    - `Authorization: Bearer`\n        \n    - `Content-Type: application/json`\n        \n- **Body (JSON example)**:\n    \n\n```\njsonCopyEdit{\n  \"firstName\": \"UpdatedName\",\n  \"lastName\": \"UpdatedLast\",\n  \"email\": \"updated@example.com\"\n}\n\n ```\n\n- **Expected Response**: `200 OK` with updated user object\n    \n\n**❗ Note**:\n\n- All fields are optional but must follow validation rules.\n    \n- Email input is normalized to lowercase automatically.\n    \n\n---\n\n### 🚫 Common Errors\n\n| Code | Description |\n| --- | --- |\n| 400 | Missing required fields / invalid format |\n| 401 | Unauthorized – invalid or missing token |\n| 409 | Email already in use |\n\n---\n\n### 🧪 Test Notes\n\n- Avoid using already registered emails for new users.\n    \n- Empty request body on `PATCH /users/me` should return `400 Bad Request`.\n    \n- When updating the email with capital letters, the response will normalize it to lowercase.\n    \n- Version field (`__v`) might not increment after update (check bug report).\n    \n\n---\n\n### ✅ Status Codes\n\n| Code | Meaning |\n| --- | --- |\n| 200 | Success |\n| 201 | Created |\n| 400 | Bad Request |\n| 401 | Unauthorized |\n| 404 | Not Found |\n| 409 | Conflict (e.g. email in use) |\n\n---\n\n### 🧑‍💻 Example Flow\n\n1. Register a new user via `/users`\n    \n2. Login with `/users/login` and get token\n    \n3. Use `PATCH /users/me` with token to update user info\n    \n\nStartFragment\n\n### 🚪 **Logout User**\n\n- **Method**: `POST`\n    \n- **Endpoint**: `/users/logout`\n    \n- **Description**: Logs out the currently authenticated user\n    \n- **Headers**:\n    \n    - `Authorization: Bearer`\n        \n- **Body**: _No body required_\n    \n- **Expected Response**: `200 OK`\n    \n- **Notes**:\n    \n    - This will invalidate the current token.\n        \n    - If token is missing or invalid, returns `401 Unauthorized`.\n        \n\n---\n\n### ❌ **Delete User Account**\n\n- **Method**: `DELETE`\n    \n- **Endpoint**: `/users/me`\n    \n- **Description**: Deletes the logged-in user's account\n    \n- **Headers**:\n    \n    - `Authorization: Bearer`\n        \n- **Body**: _No body required_\n    \n- **Expected Response**: `200 OK`\n    \n- **Notes**:\n    \n    - The user and all their related data will be permanently removed.\n        \n    - Requires a valid token.\n        \n\n---\n\n### 🔄 Reminder: Token Usage\n\nFor all protected routes like `PATCH`, `POST /logout`, and `DELETE /me`, include this in your headers:\n\n```\nmakefileCopyEditAuthorization: Bearer <your_token>\n\n ```\n\n---\n\nStartFragment\n\n### **Get User Profile**\n\n- **Method**: `GET`\n    \n- **Endpoint**: `/users/me`\n    \n- **Description**: Retrieves the profile information of the currently authenticated user\n    \n- **Headers**:\n    \n    - `Authorization: Bearer`\n        \n- **Body**: _No body required_\n    \n- **Expected Response**: `200 OK`\n    \n- jsonCopyEdit{ \"_id\": \"608b2db1add2691791c04c89\", \"firstName\": \"Test\", \"lastName\": \"User\", \"email\": \"test@fake.com\", \"__v\": 1}\n    \n- **Notes**:\n    \n    - Requires a valid Bearer token.\n        \n    - Returns current user’s full profile info.  \n        \n\nNow your full Postman user guide includes:\n\n- Add User\n    \n- Login\n    \n- Update user\n    \n- Logout\n    \n- Delete user\n    \n- Get User Profile"
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": "https://thinking-tester-contact-list.herokuapp.com",
+			"type": "default"
+		}
+	]
+}
